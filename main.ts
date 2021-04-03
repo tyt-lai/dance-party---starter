@@ -1,10 +1,23 @@
+controller.up.onEvent(ControllerButtonEvent.Pressed, function () {
+    gunguy.x = arrowXs[1]
+})
+controller.left.onEvent(ControllerButtonEvent.Pressed, function () {
+    gunguy.x = arrowXs[0]
+})
+controller.right.onEvent(ControllerButtonEvent.Pressed, function () {
+    gunguy.x = arrowXs[3]
+})
 function makeArrowDab () {
     arrowNumber = randint(0, 3)
-    arrow = sprites.create(arrowImgs[arrowNumber], 0)
+    arrow = sprites.create(arrowImgs[arrowNumber], SpriteKind.Food)
     arrow.x = 0
     arrow.x = arrowXs[arrowNumber]
     arrow.vy = 60
+    arrow.y = 0
 }
+controller.down.onEvent(ControllerButtonEvent.Pressed, function () {
+    gunguy.x = arrowXs[2]
+})
 function setUpStopper () {
     stopper = sprites.create(img`
         1111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111
@@ -24,11 +37,17 @@ function setUpStopper () {
     true
     )
 }
+sprites.onOverlap(SpriteKind.Player, SpriteKind.Food, function (sprite, otherSprite) {
+    info.changeScoreBy(1) 
+    otherSprite.destroy()
+})
 let stopper: Sprite = null
 let arrow: Sprite = null
 let arrowNumber = 0
+let gunguy: Sprite = null
 let arrowImgs: Image[] = []
 let arrowXs: number[] = []
+info.setScore(0)
 arrowXs = [35, 65, 95, 125]
 scene.setBackgroundImage(img`
     222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222.
@@ -153,24 +172,23 @@ scene.setBackgroundImage(img`
     3f99999999999999f33333333333333f9999999999999999f555555555555555f333333333333333f88888888888888888f7777777777777777f33333333333333333333f8888888888888888888888f
     `)
 arrowImgs = [img`
-    
-    6 6 6 6 6 6 6 6 6 6 6 6 6 6 6 6
-    6 6 6 6 6 6 6 6 6 6 6 6 6 6 6 6
-    6 6 6 6 6 1 6 6 6 6 6 6 6 6 6 6
-    6 6 6 6 1 1 6 6 6 6 6 6 6 6 6 6
-    6 6 6 1 1 1 6 6 6 6 6 6 6 6 6 6
-    6 6 1 1 1 1 6 6 6 6 6 6 6 6 6 6
-    6 1 1 1 1 1 1 1 1 1 1 1 1 1 6 6
-    1 1 1 1 1 1 1 1 1 1 1 1 1 1 6 6
-    6 1 1 1 1 1 1 1 1 1 1 1 1 1 6 6
-    6 6 1 1 1 1 6 6 6 6 6 6 6 6 6 6
-    6 6 6 1 1 1 6 6 6 6 6 6 6 6 6 6
-    6 6 6 6 1 1 6 6 6 6 6 6 6 6 6 6
-    6 6 6 6 6 1 6 6 6 6 6 6 6 6 6 6
-    6 6 6 6 6 6 6 6 6 6 6 6 6 6 6 6
-    6 6 6 6 6 6 6 6 6 6 6 6 6 6 6 6
-    6 6 6 6 6 6 6 6 6 6 6 6 6 6 6 6
-`, img`
+    6 6 6 6 6 6 6 6 6 6 6 6 6 6 6 6 
+    6 6 6 6 6 6 6 6 6 6 6 6 6 6 6 6 
+    6 6 6 6 6 1 6 6 6 6 6 6 6 6 6 6 
+    6 6 6 6 1 1 6 6 6 6 6 6 6 6 6 6 
+    6 6 6 1 1 1 6 6 6 6 6 6 6 6 6 6 
+    6 6 1 1 1 1 6 6 6 6 6 6 6 6 6 6 
+    6 1 1 1 1 1 1 1 1 1 1 1 1 1 6 6 
+    1 1 1 1 1 1 1 1 1 1 1 1 1 1 6 6 
+    6 1 1 1 1 1 1 1 1 1 1 1 1 1 6 6 
+    6 6 1 1 1 1 6 6 6 6 6 6 6 6 6 6 
+    6 6 6 1 1 1 6 6 6 6 6 6 6 6 6 6 
+    6 6 6 6 1 1 6 6 6 6 6 6 6 6 6 6 
+    6 6 6 6 6 1 6 6 6 6 6 6 6 6 6 6 
+    6 6 6 6 6 6 6 6 6 6 6 6 6 6 6 6 
+    6 6 6 6 6 6 6 6 6 6 6 6 6 6 6 6 
+    6 6 6 6 6 6 6 6 6 6 6 6 6 6 6 6 
+    `, img`
     6 6 6 6 6 6 6 6 1 6 6 6 6 6 6 6 
     6 6 6 6 6 6 6 1 1 1 6 6 6 6 6 6 
     6 6 6 6 6 6 1 1 1 1 1 6 6 6 6 6 
@@ -224,7 +242,7 @@ arrowImgs = [img`
     `]
 setUpStopper()
 effects.confetti.startScreenEffect()
-let gunguy = sprites.create(img`
+gunguy = sprites.create(img`
     f f f f f f . . . . . . . . . . 
     f f f f f f . . . . . . . . . . 
     f f f f f f . . . . . . . . . . 
