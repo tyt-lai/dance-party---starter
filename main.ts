@@ -1,11 +1,10 @@
 function makeArrowDab () {
-	let arrowNumber = randint(0, 3)
-    let arrow = sprites.create(arrowImgs[arrowNumber])
+    arrowNumber = randint(0, 3)
+    arrow = sprites.create(arrowImgs[arrowNumber], 0)
     arrow.x = 0
     arrow.x = arrowXs[arrowNumber]
     arrow.vy = 60
-}   
-let arrowXs = [35, 65, 95, 125]
+}
 function setUpStopper () {
     stopper = sprites.create(img`
         1111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111
@@ -26,6 +25,11 @@ function setUpStopper () {
     )
 }
 let stopper: Sprite = null
+let arrow: Sprite = null
+let arrowNumber = 0
+let arrowImgs: Image[] = []
+let arrowXs: number[] = []
+arrowXs = [35, 65, 95, 125]
 scene.setBackgroundImage(img`
     222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222.
     2222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222
@@ -148,7 +152,7 @@ scene.setBackgroundImage(img`
     33f99999999999999f33333333333333f9999999999999999f55555555555555f333333333333333f8888888888888888f7777777777777777f33333333333333333333f8888888888888888888888f7
     3f99999999999999f33333333333333f9999999999999999f555555555555555f333333333333333f88888888888888888f7777777777777777f33333333333333333333f8888888888888888888888f
     `)
-let arrowImgs = [img`
+arrowImgs = [img`
     6 6 6 6 6 6 6 6 6 6 6 6 6 6 6 6 
     6 6 6 6 6 6 6 6 6 6 6 6 6 6 6 6 
     6 6 6 6 6 1 6 6 6 6 6 6 6 6 6 6 
@@ -237,8 +241,8 @@ let gunguy = sprites.create(img`
     f . . f . . . . . . . . . . . . 
     f . . f . . . . . . . . . . . . 
     `, SpriteKind.Player)
+gunguy.x = arrowXs[1]
+gunguy.y = 100
 game.onUpdateInterval(500, function () {
     makeArrowDab()
 })
-gunguy.x = arrowXs[1]
-gunguy.y = 100
